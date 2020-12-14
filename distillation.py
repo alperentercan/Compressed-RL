@@ -1,6 +1,6 @@
 import tensorflow as tf
 def KL_Distillation(student, teacher, experiences, transition_converter, temperature=1,
-                    epochs=50, steps_per_epoch = 80000//32, verbose=0):
+                    epochs=50, steps_per_epoch = 80000//32, verbose=0, callbacks=None):
     '''
     student: Needs to be a regular network outputing logits
     '''
@@ -18,12 +18,13 @@ def KL_Distillation(student, teacher, experiences, transition_converter, tempera
           metrics=['accuracy'])
         
     hist = student.fit(q_dist_dataset, #batch_size=batch_size,
-                  epochs=epochs,
-                      steps_per_epoch = steps_per_epoch, verbose=verbose)
+                       epochs=epochs,
+                       steps_per_epoch = steps_per_epoch,
+                       verbose=verbose, callbacks=callbacks)
     return hist
     
 def MSE_Distillation(student, teacher, experiences, transition_converter,
-                    epochs=50, steps_per_epoch = 80000//32, verbose = 0):   
+                    epochs=50, steps_per_epoch = 80000//32, verbose = 0, callbacks=None):   
     
     from distillation_utils import compute_q_targets
     
@@ -36,13 +37,14 @@ def MSE_Distillation(student, teacher, experiences, transition_converter,
       metrics=['accuracy'])
     
     hist = student.fit(q_logits_dataset, #batch_size=batch_size,
-                  epochs=epochs, steps_per_epoch = steps_per_epoch, verbose=verbose)
+                       epochs=epochs, steps_per_epoch = steps_per_epoch,
+                       verbose=verbose, callbacks=callbacks)
     return hist
 
     
     
 def NLL_Distillation(student, teacher, experiences, transition_converter,
-                    epochs=50, steps_per_epoch = 80000//32, verbose = 0):   
+                        epochs=50, steps_per_epoch = 80000//32, verbose = 0,callbacks=None):   
     
     from distillation_utils import compute_q_targets,labeling
     
@@ -55,6 +57,7 @@ def NLL_Distillation(student, teacher, experiences, transition_converter,
       metrics=['accuracy'])
     
     hist = tudent.fit(labeled_q_dataset, #batch_size=batch_size,
-                  epochs=epochs, steps_per_epoch = steps_per_epoch, verbose=verbose)
+                  epochs=epochs, steps_per_epoch = steps_per_epoch,
+                      verbose=verbose, callbacks=callbacks)
     
     return hist
